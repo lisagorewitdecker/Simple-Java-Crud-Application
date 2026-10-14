@@ -13,6 +13,7 @@ public class ProductRequest {
 
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be greater than zero")
+    @jakarta.validation.constraints.Digits(integer = 17, fraction = 2, message = "Price must have at most 17 integer digits and 2 decimal places")
     private BigDecimal price;
 
     public ProductRequest() {
