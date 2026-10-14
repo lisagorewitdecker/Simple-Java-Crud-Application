@@ -213,11 +213,15 @@ config profiles).
 | `DELETE` | `/api/products/{id}` | Delete product by ID                                                        |
 | `GET`    | `/actuator/health`   | Application health check endpoint                                           |
 
-Sample request workflows
-can be executed directly
-from IntelliJ IDEA /
-WebStorm using
-`requests.http`.
+The sample request workflows
+in `requests.http` require
+authentication. Run the
+login request first with
+`admin` / `admin123` in
+IntelliJ IDEA / WebStorm,
+then run the API requests in
+the same HTTP client session
+so its login cookie is reused.
 
 ---
 
