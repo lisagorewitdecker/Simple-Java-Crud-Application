@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Positive;
 public class ProductRequest {
 
     @NotBlank(message = "Product name cannot be blank")
+    @jakarta.validation.constraints.Size(max = 255, message = "Product name must not exceed 255 characters")
     private String name;
 
     @NotNull(message = "Price is required")
