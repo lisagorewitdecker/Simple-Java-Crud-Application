@@ -20,7 +20,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Disabled for simplicity with REST fetch calls
+            .csrf(csrf -> {}) // Keep CSRF protection enabled (Spring default)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
