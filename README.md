@@ -182,7 +182,7 @@ config profiles).
 | `server.port`                                | `8080`                                                           | Port for the HTTP server                    |
 | `spring.datasource.url`                      | `jdbc:h2:mem:productdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE` | JDBC URL for H2 in-memory database          |
 | `spring.datasource.driverClassName`          | `org.h2.Driver`                                                  | Database JDBC driver                        |
-| `spring.datasource.username`                 | `sa`                                                             | Database user                               |
+| `spring.datasource.username`                 | `root`                                                           | Database user                               |
 | `spring.datasource.password`                 | *(empty)*                                                        | Database password                           |
 | `spring.datasource.hikari.minimum-idle`      | `5`                                                              | Minimum idle connections in HikariCP pool   |
 | `spring.datasource.hikari.maximum-pool-size` | `10`                                                             | Maximum connections in HikariCP pool        |
