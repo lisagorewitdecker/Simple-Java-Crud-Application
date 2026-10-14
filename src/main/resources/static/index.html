@@ -277,16 +277,34 @@
             return;
         }
 
-        tableBody.innerHTML = products.map(p => `<tr>
-          <td>${p.id}</td>
-          <td><strong>${p.name}</strong></td>
-          <td>$${p.price.toFixed(2)}</td>
-          <td class="actions">
-            <button onclick="editProduct(${p.id}, '${escapeHtml(p.name)}', ${p.price})">Edit</button>
-            <button class="btn-danger" onclick="deleteProduct(${p.id})">Delete</button>
-          </td>
-        </tr>
-      `).join('');
+        const rows = products.map(product => {
+            const row = document.createElement('tr');
+            const idCell = document.createElement('td');
+            idCell.textContent = product.id;
+
+            const nameCell = document.createElement('td');
+            const name = document.createElement('strong');
+            name.textContent = product.name;
+            nameCell.appendChild(name);
+
+            const priceCell = document.createElement('td');
+            priceCell.textContent = `$${product.price.toFixed(2)}`;
+
+            const actionsCell = document.createElement('td');
+            actionsCell.className = 'actions';
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            editButton.addEventListener('click', () => window.editProduct(product.id, product.name, product.price));
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'btn-danger';
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', () => window.deleteProduct(product.id));
+            actionsCell.append(editButton, deleteButton);
+
+            row.append(idCell, nameCell, priceCell, actionsCell);
+            return row;
+        });
+        tableBody.replaceChildren(...rows);
     }
 
     function updatePagination(data) {
@@ -355,10 +373,6 @@
     nextBtn.addEventListener('click', () => {
         loadProducts(currentPage + 1, searchInput.value.trim());
     });
-
-    function escapeHtml(str) {
-        return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    }
 
     // Initial load
     loadProducts();
