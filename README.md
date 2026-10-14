@@ -40,13 +40,11 @@ architecture principles:
   HikariCP connection
   pooling for development
   and testing.
-- **Modular
-  Architecture**: Spring
-  Modulith integration
-  for modular structure
-  verification and
-  documentation
-  generation.
+- **Modular Architecture**:
+  Spring Modulith
+  dependencies support the
+  application's modular
+  structure.
 - **Monitoring &
   Metrics**: Spring Boot
   Actuator integration
