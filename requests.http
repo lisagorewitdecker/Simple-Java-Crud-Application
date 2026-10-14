@@ -1,0 +1,211 @@
+### 1. Create a product (Valid)
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+  "name": "Mechanical Keyboard",
+  "price": 89.99
+}
+
+> {%
+    client.test("Product created successfully", function () {
+        client.assert(response.status === 201, "Expected status code 201");
+        client.assert(response.body.id !== undefined, "Response body should have an id");
+        client.assert(response.body.name === "Mechanical Keyboard", "Product name does not match");
+        client.assert(response.body.price === 89.99, "Product price does not match");
+    });
+    client.global.set("created_id", response.body.id);
+%}
+
+### 2. Create another product (for search, sort, and pagination)
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+  "name": "Standing Desk",
+  "price": 299.99
+}
+
+> {%
+    client.test("Second product created successfully", function () {
+        client.assert(response.status === 201, "Expected status code 201");
+    });
+%}
+
+### 3. Create a product (Invalid - Tests validation handler)
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+  "name": "",
+  "price": -10.00
+}
+
+> {%
+    client.test("Validation error returns 400 Bad Request", function () {
+        client.assert(response.status === 400, "Expected status code 400");
+        client.assert(response.body.errors !== undefined, "Response should contain validation errors");
+        client.assert(response.body.errors.name !== undefined, "Validation error for name should exist");
+        client.assert(response.body.errors.price !== undefined, "Validation error for price should exist");
+    });
+%}
+
+### 4. Get all products
+GET http://localhost:8080/api/products
+
+> {%
+    client.test("Get all products returns 200 OK", function () {
+        client.assert(response.status === 200, "Expected status code 200");
+        client.assert(response.body.content !== undefined, "Response body should have content");
+    });
+%}
+
+### 5. Get product by generated ID
+GET http://localhost:8080/api/products/{{created_id}}
+
+> {%
+    client.test("Get product by ID returns 200 OK", function () {
+        client.assert(response.status === 200, "Expected status code 200");
+        client.assert(response.body.id === client.global.get("created_id"), "Product ID does not match");
+    });
+%}
+
+### 6. Update the product
+PUT http://localhost:8080/api/products/{{created_id}}
+Content-Type: application/json
+
+{
+  "name": "Mechanical Keyboard Pro",
+  "price": 109.99
+}
+
+> {%
+    client.test("Update product returns 200 OK", function () {
+        client.assert(response.status === 200, "Expected status code 200");
+        client.assert(response.body.name === "Mechanical Keyboard Pro", "Updated name does not match");
+        client.assert(response.body.price === 109.99, "Updated price does not match");
+    });
+%}
+
+### 7. Get first page (default 10 items, sorted by ID ASC)
+GET http://localhost:8080/api/products
+
+> {%
+    client.test("Get first page returns 200 OK", function () {
+        client.assert(response.status === 200, "Expected status code 200");
+        client.assert(response.body.pageable !== undefined, "Response should contain pageable info");
+    });
+%}
+
+### 8. Custom page and size (Page index is 0-based)
+GET http://localhost:8080/api/products?
+    page=0&size=5
+
+> {%
+    client.test("Custom page and size returns 200 OK", function () {
+        client.assert(response.status === 200, "Expected status code 200");
+        client.assert(response.body.size === 5, "Page size should be 5");
+    });
+%}
+
+### 9. Sort by price ascending
+GET http://localhost:8080/api/products?
+    page=0&size=5&
+    sort=price,asc
+
+> {%
+    client.test("Sort by price ascending returns 200 OK", function () {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
+%}
+
+### 10. Sort by price descending
+GET http://localhost:8080/api/products?
+    page=0&size=5&
+    sort=price,desc
+
+> {%
+    client.test("Sort by price descending returns 200 OK", function () {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
+%}
+
+### 11. Multi-column sort (Price descending, then Name ascending)
+GET http://localhost:8080/api/products?
+    page=0&size=10&
+    sort=price,desc&
+    sort=name,asc
+
+> {%
+    client.test("Multi-column sort returns 200 OK", function () {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
+%}
+
+### 12. Search products by keyword (case-insensitive)
+GET http://localhost:8080/api/products?
+    name=keyboard&page=0&
+    size=5
+
+> {%
+    client.test("Search by keyword returns 200 OK", function () {
+        client.assert(response.status === 200, "Expected status code 200");
+        client.assert(response.body.content.length > 0, "Expected at least one matching product");
+    });
+%}
+
+### 13. Filter products by price range ($50.00 to $150.00)
+GET http://localhost:8080/api/products?
+    minPrice=50.00&
+    maxPrice=150.00&
+    sort=price,asc
+
+> {%
+    client.test("Filter by price range returns 200 OK", function () {
+        client.assert(response.status === 200, "Expected status code 200");
+    });
+%}
+
+### 14. Combined search with sorting
+GET http://localhost:8080/api/products?
+    name=desk&
+    sort=price,desc&
+    size=5
+
+> {%
+    client.test("Combined search returns 200 OK", function () {
+        client.assert(response.status === 200, "Expected status code 200");
+        client.assert(response.body.content.length > 0, "Expected matching desk product");
+    });
+%}
+
+### 15. Filter products by invalid price range (minPrice > maxPrice - Should return 400)
+GET http://localhost:8080/api/products?
+    minPrice=100.00&
+    maxPrice=50.00
+
+> {%
+    client.test("Invalid price range returns 400 Bad Request", function () {
+        client.assert(response.status === 400, "Expected status code 400");
+        client.assert(response.body.error === "minPrice must not be greater than maxPrice", "Expected error message");
+    });
+%}
+
+### 16. Delete the product
+DELETE
+    http://localhost:8080/api/products/{{created_id}}
+
+> {%
+    client.test("Delete product returns 204 No Content", function () {
+        client.assert(response.status === 204, "Expected status code 204");
+    });
+%}
+
+### 17. Verify deletion (Should return 404)
+GET http://localhost:8080/api/products/{{created_id}}
+
+> {%
+    client.test("Deleted product returns 404 Not Found", function () {
+        client.assert(response.status === 404, "Expected status code 404");
+    });
+%}
