@@ -117,7 +117,7 @@ architecture principles:
 
 ```bash
 git clone <repository-url>
-cd demo
+cd Simple-Java-Crud-Application
 ```
 
 ### 2. Build the Application
