@@ -97,10 +97,8 @@ architecture principles:
 - **Main Application**:
   `com.example.demo.DemoApplication`
   (`src/main/java/com/example/demo/DemoApplication.java`)
-- **Web API Base
-  URL**: http://localhost:8080/api/products`
-- **Actuator Base
-  URL**: http://localhost:8080/actuator`
+- **Web API Base URL**: `http://localhost:8080/api/products`
+- **Actuator Base URL**: `http://localhost:8080/actuator`
 - **HTTP Client
   Requests**:
   requests.http` (sample
