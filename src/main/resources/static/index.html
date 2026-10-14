@@ -328,14 +328,20 @@
         const method = id ? 'PUT' : 'POST';
         const endpoint = id ? `${API_URL}/${id}` : API_URL;
 
-        await fetch(endpoint, {
+        const response = await fetch(endpoint, {
             method: method,
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(payload)
         });
 
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            alert(error.error || 'Unable to save product.');
+            return;
+        }
+
         resetForm();
-        loadProducts(currentPage, searchInput.value.trim());
+        await loadProducts(currentPage, searchInput.value.trim());
     });
 
     window.editProduct = (id, name, price) => {
