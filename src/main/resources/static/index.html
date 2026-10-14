@@ -259,6 +259,9 @@
 
         try {
             const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Product request failed with status ${response.status}`);
+            }
             const data = await response.json();
 
             renderTable(data.content || []);
