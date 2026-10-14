@@ -192,8 +192,7 @@ GET http://localhost:8080/api/products?
 %}
 
 ### 16. Delete the product
-DELETE
-    http://localhost:8080/api/products/{{created_id}}
+DELETE http://localhost:8080/api/products/{{created_id}}
 
 > {%
     client.test("Delete product returns 204 No Content", function () {
