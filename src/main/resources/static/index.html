@@ -358,8 +358,12 @@
 
     window.deleteProduct = async (id) => {
         if (!confirm(`Are you sure you want to delete product #${id}?`)) return;
-        await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
-        loadProducts(currentPage, searchInput.value.trim());
+        const response = await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
+        if (!response.ok) {
+            alert('Unable to delete product.');
+            return;
+        }
+        await loadProducts(currentPage, searchInput.value.trim());
     };
 
     function resetForm() {
