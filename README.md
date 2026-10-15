@@ -100,9 +100,9 @@ architecture principles:
   `com.example.demo.DemoApplication`
   (`src/main/java/com/example/demo/DemoApplication.java`)
 - **Web API Base
-  URL**: http://localhost:8080/api/products`
+  URL**: http://localhost:8081/api/products`
 - **Actuator Base
-  URL**: http://localhost:8080/actuator`
+  URL**: http://localhost:8081/actuator`
 - **HTTP Client
   Requests**:
   requests.http` (sample
@@ -150,7 +150,7 @@ java -jar target/demo-0.0.1-SNAPSHOT.jar
 ```
 
 The service will start on
-port `8080` by default.
+port `8081` by default.
 
 ---
 
@@ -181,7 +181,7 @@ config profiles).
 
 | Property                                     | Default Value                                                    | Description                                 |
 |:---------------------------------------------|:-----------------------------------------------------------------|:--------------------------------------------|
-| `server.port`                                | `8080`                                                           | Port for the HTTP server                    |
+| `server.port`                                | `8081`                                                           | Port for the HTTP server                    |
 | `spring.datasource.url`                      | `jdbc:h2:mem:productdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE` | JDBC URL for H2 in-memory database          |
 | `spring.datasource.driverClassName`          | `org.h2.Driver`                                                  | Database JDBC driver                        |
 | `spring.datasource.username`                 | `sa`                                                             | Database user                               |

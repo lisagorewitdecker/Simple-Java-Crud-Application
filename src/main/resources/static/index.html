@@ -232,7 +232,7 @@
 </div>
 
 <script>
-    const API_URL = 'http://localhost:8080/api/products';
+    const API_URL = 'http://localhost:8081/api/products';
     let currentPage = 0;
     const pageSize = 5;
 
@@ -264,7 +264,7 @@
         } catch (err) {
             tableBody.innerHTML = `<tr>
                 <td colspan="4" style="color:red; text-align:center;">
-                Failed to connect to backend on port 8080.</td>
+                Failed to connect to backend on port 8081.</td>
                 </tr>`;
         }
     }
