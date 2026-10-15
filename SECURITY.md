@@ -13,9 +13,9 @@ not supported with security updates.
 
 ## Reporting a Vulnerability
 
-Please report suspected security vulnerabilities privately through the
-repository's **Security** tab using **Report a vulnerability**, if that option
-is available. Do not disclose vulnerabilities in public issues or discussions.
+Submit suspected security vulnerabilities through **Report a vulnerability**
+on the repository's **Security** tab. Do not disclose vulnerabilities in public
+issues or discussions.
 
 Include steps to reproduce, the potential impact, and any relevant logs or
 proof-of-concept details. Please avoid including real credentials or personal
@@ -28,5 +28,6 @@ reporter on remediation and coordinated disclosure. If it is declined, the
 reporter will be informed why. Response and remediation timelines may depend
 on the severity and complexity of the issue.
 
-If private vulnerability reporting is unavailable, contact the repository
-maintainers privately through GitHub rather than posting details publicly.
+If **Report a vulnerability** is unavailable, open a public issue asking
+maintainers to enable private vulnerability reporting. Do not mention the
+suspected vulnerability or include any details in that request.
