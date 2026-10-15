@@ -40,11 +40,13 @@ architecture principles:
   HikariCP connection
   pooling for development
   and testing.
-- **Modular Architecture**:
-  Spring Modulith
-  dependencies support the
-  application's modular
-  structure.
+- **Modular
+  Architecture**: Spring
+  Modulith integration
+  for modular structure
+  verification and
+  documentation
+  generation.
 - **Monitoring &
   Metrics**: Spring Boot
   Actuator integration
@@ -97,8 +99,10 @@ architecture principles:
 - **Main Application**:
   `com.example.demo.DemoApplication`
   (`src/main/java/com/example/demo/DemoApplication.java`)
-- **Web API Base URL**: `http://localhost:8080/api/products`
-- **Actuator Base URL**: `http://localhost:8080/actuator`
+- **Web API Base
+  URL**: http://localhost:8080/api/products`
+- **Actuator Base
+  URL**: http://localhost:8080/actuator`
 - **HTTP Client
   Requests**:
   requests.http` (sample
@@ -180,7 +184,7 @@ config profiles).
 | `server.port`                                | `8080`                                                           | Port for the HTTP server                    |
 | `spring.datasource.url`                      | `jdbc:h2:mem:productdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE` | JDBC URL for H2 in-memory database          |
 | `spring.datasource.driverClassName`          | `org.h2.Driver`                                                  | Database JDBC driver                        |
-| `spring.datasource.username`                 | `root`                                                           | Database user                               |
+| `spring.datasource.username`                 | `sa`                                                             | Database user                               |
 | `spring.datasource.password`                 | *(empty)*                                                        | Database password                           |
 | `spring.datasource.hikari.minimum-idle`      | `5`                                                              | Minimum idle connections in HikariCP pool   |
 | `spring.datasource.hikari.maximum-pool-size` | `10`                                                             | Maximum connections in HikariCP pool        |
@@ -213,15 +217,11 @@ config profiles).
 | `DELETE` | `/api/products/{id}` | Delete product by ID                                                        |
 | `GET`    | `/actuator/health`   | Application health check endpoint                                           |
 
-The sample request workflows
-in `requests.http` require
-authentication. Run the
-login request first with
-`admin` / `admin123` in
-IntelliJ IDEA / WebStorm,
-then run the API requests in
-the same HTTP client session
-so its login cookie is reused.
+Sample request workflows
+can be executed directly
+from IntelliJ IDEA /
+WebStorm using
+`requests.http`.
 
 ---
 

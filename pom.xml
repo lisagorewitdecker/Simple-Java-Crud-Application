@@ -100,7 +100,7 @@
                     springdoc-openapi-starter-webmvc-ui
                 </artifactId>
                 <version>
-                    3.1.1
+                    2.8.5
                 </version>
             </dependency>
             <dependency>
@@ -241,6 +241,9 @@
             <artifactId>
                 spring-boot-starter-security
             </artifactId>
+            <version>
+                3.3.4
+            </version>
         </dependency>
     </dependencies>
     <build>

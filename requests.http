@@ -1,9 +1,3 @@
-### 0. Log in (run before the API requests)
-POST http://localhost:8080/login
-Content-Type: application/x-www-form-urlencoded
-
-username=admin&password=admin%31%32%33
-
 ### 1. Create a product (Valid)
 POST http://localhost:8080/api/products
 Content-Type: application/json
@@ -198,7 +192,8 @@ GET http://localhost:8080/api/products?
 %}
 
 ### 16. Delete the product
-DELETE http://localhost:8080/api/products/{{created_id}}
+DELETE
+    http://localhost:8080/api/products/{{created_id}}
 
 > {%
     client.test("Delete product returns 204 No Content", function () {
