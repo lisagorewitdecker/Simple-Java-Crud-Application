@@ -8,12 +8,10 @@ import jakarta.validation.constraints.Positive;
 public class ProductRequest {
 
     @NotBlank(message = "Product name cannot be blank")
-    @jakarta.validation.constraints.Size(max = 255, message = "Product name must not exceed 255 characters")
     private String name;
 
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be greater than zero")
-    @jakarta.validation.constraints.Digits(integer = 17, fraction = 2, message = "Price must have at most 17 integer digits and 2 decimal places")
     private BigDecimal price;
 
     public ProductRequest() {

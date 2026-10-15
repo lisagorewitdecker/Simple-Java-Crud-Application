@@ -158,8 +158,7 @@
               id="productForm">
             <input id="productId"
                    type="hidden"/>
-            <input aria-label="Product name"
-                   id="productName"
+            <input id="productName"
                    placeholder="Product name"
                    required
                    type="text"/>
@@ -180,8 +179,7 @@
     <!-- Filter & Table -->
     <div class="card">
         <div class="search-bar">
-            <input aria-label="Filter products by name"
-                   id="searchInput"
+            <input id="searchInput"
                    placeholder="Filter by name..."
                    type="text"/>
             <button id="searchBtn">
@@ -259,9 +257,6 @@
 
         try {
             const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Product request failed with status ${response.status}`);
-            }
             const data = await response.json();
 
             renderTable(data.content || []);
@@ -280,34 +275,16 @@
             return;
         }
 
-        const rows = products.map(product => {
-            const row = document.createElement('tr');
-            const idCell = document.createElement('td');
-            idCell.textContent = product.id;
-
-            const nameCell = document.createElement('td');
-            const name = document.createElement('strong');
-            name.textContent = product.name;
-            nameCell.appendChild(name);
-
-            const priceCell = document.createElement('td');
-            priceCell.textContent = `$${product.price.toFixed(2)}`;
-
-            const actionsCell = document.createElement('td');
-            actionsCell.className = 'actions';
-            const editButton = document.createElement('button');
-            editButton.textContent = 'Edit';
-            editButton.addEventListener('click', () => window.editProduct(product.id, product.name, product.price));
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'btn-danger';
-            deleteButton.textContent = 'Delete';
-            deleteButton.addEventListener('click', () => window.deleteProduct(product.id));
-            actionsCell.append(editButton, deleteButton);
-
-            row.append(idCell, nameCell, priceCell, actionsCell);
-            return row;
-        });
-        tableBody.replaceChildren(...rows);
+        tableBody.innerHTML = products.map(p => `<tr>
+          <td>${p.id}</td>
+          <td><strong>${p.name}</strong></td>
+          <td>$${p.price.toFixed(2)}</td>
+          <td class="actions">
+            <button onclick="editProduct(${p.id}, '${escapeHtml(p.name)}', ${p.price})">Edit</button>
+            <button class="btn-danger" onclick="deleteProduct(${p.id})">Delete</button>
+          </td>
+        </tr>
+      `).join('');
     }
 
     function updatePagination(data) {
@@ -328,20 +305,14 @@
         const method = id ? 'PUT' : 'POST';
         const endpoint = id ? `${API_URL}/${id}` : API_URL;
 
-        const response = await fetch(endpoint, {
+        await fetch(endpoint, {
             method: method,
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(payload)
         });
 
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({}));
-            alert(error.error || 'Unable to save product.');
-            return;
-        }
-
         resetForm();
-        await loadProducts(currentPage, searchInput.value.trim());
+        loadProducts(currentPage, searchInput.value.trim());
     });
 
     window.editProduct = (id, name, price) => {
@@ -358,12 +329,8 @@
 
     window.deleteProduct = async (id) => {
         if (!confirm(`Are you sure you want to delete product #${id}?`)) return;
-        const response = await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
-        if (!response.ok) {
-            alert('Unable to delete product.');
-            return;
-        }
-        await loadProducts(currentPage, searchInput.value.trim());
+        await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
+        loadProducts(currentPage, searchInput.value.trim());
     };
 
     function resetForm() {
@@ -386,6 +353,10 @@
     nextBtn.addEventListener('click', () => {
         loadProducts(currentPage + 1, searchInput.value.trim());
     });
+
+    function escapeHtml(str) {
+        return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
 
     // Initial load
     loadProducts();

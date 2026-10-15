@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0"
+          name="viewport"/>
+    <title>Product
+        Inventory
+        Manager</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 1rem;
+        }
+
+        input {
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            padding: 0.6rem 1.2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+        }
+
+        button.btn-danger {
+            background: var(--danger);
+        }
+
+        button.btn-danger:hover {
+            background: var(--danger-hover);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-bar input {
+            flex: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: #f1f5f9;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Product
+        Inventory</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <a href="/logout"
+           style="padding: 0.5rem 1rem; background: #e2e8f0; color: #334155; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 0.85rem;">Logout</a>
+    </div>
+    <!-- Add / Edit Form -->
+    <div class="card">
+        <h3 id="formTitle"
+            style="margin-top:0">
+            Add New
+            Product</h3>
+        <form class="form-grid"
+              id="productForm">
+            <input id="productId"
+                   type="hidden"/>
+            <input id="productName"
+                   placeholder="Product name"
+                   required
+                   type="text"/>
+            <input id="productPrice"
+                   min="0.01"
+                   placeholder="Price (\$)"
+                   required
+                   step="0.01"
+                   type="number"/>
+            <button id="saveBtn"
+                    type="submit">
+                Save
+                Product
+            </button>
+        </form>
+    </div>
+
+    <!-- Filter & Table -->
+    <div class="card">
+        <div class="search-bar">
+            <input id="searchInput"
+                   placeholder="Filter by name..."
+                   type="text"/>
+            <button id="searchBtn">
+                Search
+            </button>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>ID
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+            </thead>
+            <tbody id="productTableBody">
+            <tr>
+                <td colspan="4"
+                    style="text-align:center;">
+                    Loading
+                    products...
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            <button disabled
+                    id="prevBtn">
+                &larr;
+                Previous
+            </button>
+            <span id="pageInfo">Page 1 of 1</span>
+            <button disabled
+                    id="nextBtn">
+                Next
+                &rarr;
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080/api/products';
+    let currentPage = 0;
+    const pageSize = 5;
+
+    // Elements
+    const form = document.getElementById('productForm');
+    const formTitle = document.getElementById('formTitle');
+    const idInput = document.getElementById('productId');
+    const nameInput = document.getElementById('productName');
+    const priceInput = document.getElementById('productPrice');
+    const saveBtn = document.getElementById('saveBtn');
+    const tableBody = document.getElementById('productTableBody');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageInfo = document.getElementById('pageInfo');
+
+    async function loadProducts(page = 0, query = '') {
+        currentPage = page;
+        let url = `${API_URL}?page=${page}&size=${pageSize}&sort=id,asc`;
+        if (query) url += `&name=${encodeURIComponent(query)}`;
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            renderTable(data.content || []);
+            updatePagination(data);
+        } catch (err) {
+            tableBody.innerHTML = `<tr>
+                <td colspan="4" style="color:red; text-align:center;">
+                Failed to connect to backend on port 8080.</td>
+                </tr>`;
+        }
+    }
+
+    function renderTable(products) {
+        if (products.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No products found.</td></tr>`;
+            return;
+        }
+
+        tableBody.innerHTML = products.map(p => `<tr>
+          <td>${p.id}</td>
+          <td><strong>${p.name}</strong></td>
+          <td>$${p.price.toFixed(2)}</td>
+          <td class="actions">
+            <button onclick="editProduct(${p.id}, '${escapeHtml(p.name)}', ${p.price})">Edit</button>
+            <button class="btn-danger" onclick="deleteProduct(${p.id})">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updatePagination(data) {
+        const totalPages = data.totalPages || 1;
+        pageInfo.textContent = `Page ${currentPage + 1} of ${totalPages || 1} (${data.totalElements || 0} items)`;
+        prevBtn.disabled = currentPage <= 0;
+        nextBtn.disabled = currentPage >= totalPages - 1;
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = idInput.value;
+        const payload = {
+            name: nameInput.value.trim(),
+            price: parseFloat(priceInput.value)
+        };
+
+        const method = id ? 'PUT' : 'POST';
+        const endpoint = id ? `${API_URL}/${id}` : API_URL;
+
+        await fetch(endpoint, {
+            method: method,
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+
+        resetForm();
+        loadProducts(currentPage, searchInput.value.trim());
+    });
+
+    window.editProduct = (id, name, price) => {
+        formTitle.textContent = `Edit Product #${id}`;
+        idInput.value = id;
+        nameInput.value = name;
+        priceInput.value = price;
+        saveBtn.textContent = 'Update Product';
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    };
+
+    window.deleteProduct = async (id) => {
+        if (!confirm(`Are you sure you want to delete product #${id}?`)) return;
+        await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
+        loadProducts(currentPage, searchInput.value.trim());
+    };
+
+    function resetForm() {
+        formTitle.textContent = 'Add New Product';
+        idInput.value = '';
+        nameInput.value = '';
+        priceInput.value = '';
+        saveBtn.textContent = 'Save Product';
+    }
+
+    searchBtn.addEventListener('click', () => loadProducts(0, searchInput.value.trim()));
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') loadProducts(0, searchInput.value.trim());
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 0) loadProducts(currentPage - 1, searchInput.value.trim());
+    });
+
+    nextBtn.addEventListener('click', () => {
+        loadProducts(currentPage + 1, searchInput.value.trim());
+    });
+
+    function escapeHtml(str) {
+        return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    // Initial load
+    loadProducts();
+</script>
+</body>
+</html>
